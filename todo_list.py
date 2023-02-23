@@ -1,5 +1,9 @@
 # Project: A Command Line Todo List
 
+# Project complete according to user stories
+# A lot more can be added such as error handling for incorrect data types. Will be added in due time.
+
+
 # Constants
 
 ADD = "add"
