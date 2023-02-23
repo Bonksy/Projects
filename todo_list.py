@@ -57,6 +57,18 @@ while True:
         for i, item in enumerate(complete_list, start = 1):
             print(f"{i}.", item)
 
+    elif command == DELETE.lower():
+        print("Todo list:" )
+        for i, task in enumerate(todo_list, start = 1):
+            print(f"{i}.", task)
+        del_task = int(input("Which task number do you want to delete? "))
+        print(f"Task {del_task} {todo_list[del_task - 1]} has been deleted from the list.")
+        todo_list.pop(del_task - 1)
+        for i, task in enumerate(todo_list, start = 1):
+            print(f"{i}.", task)
+        
+
+
     elif command == SHOW_ALL.lower():
         print("Todo List:")
         for i, item in enumerate(todo_list, start = 1):
