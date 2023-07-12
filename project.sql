@@ -45,9 +45,81 @@ and the offices table on teh officeCode column which is a many-to-one relationsh
 relationship with the employees table on the officeCode table which is a one-to-many relationship.
 
 
+-- SQL queries I will be executing to analyse the tables:
 
+*/
 
-
-
+SELECT "Customers" AS table_name,
+	   13 AS number_of_attributes,
+	   COUNT(*) AS number_of_rows
+  FROM customers
+  
+ UNION 
+  
+SELECT "Products" AS table_name,
+	   9 AS number_of_attributes,
+	   COUNT(*) AS number_of_rows
+  FROM products
+  
+ UNION
  
- */
+SELECT "ProductLines" AS table_name,
+	   4 AS number_of_attributes,
+	   COUNT(*) AS number_of_rows
+  FROM productLines
+  
+ UNION
+ 
+SELECT "Orders" AS table_name,
+	    7 AS number_of_attributes,
+		COUNT(*) AS number_of_rows
+  FROM orders
+  
+ UNION
+
+SELECT "OrderDetails" AS table_name,
+       5 AS number_of_attributes,
+	   COUNT(*) AS number_of_rows
+  FROM orderdetails
+  
+ UNION
+ 
+SELECT "Payments" AS table_name,
+	   4 AS number_of_attributes,
+	   COUNT(*) AS number_of_rows
+  FROM payments
+ 
+ UNION
+ 
+SELECT "Employees" AS table_name,
+	   8 AS number_of_attributes,
+	   COUNT(*) AS number_of_rows
+  FROM employees
+  
+ UNION
+ 
+SELECT "Offices" AS table_name,
+       9 AS number_of_attributes,
+	   COUNT(*) AS number_of_rows
+  FROM offices;
+
+
+-- Write a query to compute the low stock for each product using a correlated subquery.
+
+SELECT productcode, ROUND(SUM(quantityOrdered) * 1.0 / (SELECT quantityInStock
+													      FROM products pr
+													     WHERE od.productcode = pr.productCode), 2) AS low_stock
+  FROM orderdetails od
+ GROUP BY productCode
+ ORDER BY low_Stock 
+ LIMIT 10;
+
+-- Write a query to compute the product performance for each product.
+
+SELECT productCode, SUM(quantityOrdered * priceEach) AS product_performance
+  FROM orderdetails
+ GROUP BY productcode
+ ORDER BY product_performance DESC
+ LIMIT 10;
+ 
+ 
