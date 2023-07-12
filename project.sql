@@ -121,5 +121,33 @@ SELECT productCode, SUM(quantityOrdered * priceEach) AS product_performance
  GROUP BY productcode
  ORDER BY product_performance DESC
  LIMIT 10;
+
+-- Combine the previous queries using a Common Table Expression (CTE) to display priority products for restocking using the IN operator.
+
+WITH low_stock_products AS (
+SELECT productcode, 
+	   ROUND(SUM(quantityOrdered) * 1.0 / (SELECT quantityInStock
+										     FROM products pr
+											WHERE od.productcode = pr.productCode), 2) AS low_stock
+  FROM orderdetails od
+ GROUP BY productCode
+ ORDER BY low_Stock 
+ LIMIT 10
+ )
+ 
+ SELECT productCode, 
+        SUM(quantityOrdered * priceEach) AS product_performance
+  FROM orderdetails od
+  WHERE productCode IN(SELECT productCode 
+						 FROM low_stock_products)
+  GROUP BY productcode
+  ORDER BY product_performance DESC
+  LIMIT 10;
+ 
+
+
+
+
+
  
  
