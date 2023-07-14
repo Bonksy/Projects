@@ -103,6 +103,7 @@ SELECT "Offices" AS table_name,
 	   COUNT(*) AS number_of_rows
   FROM offices;
 
+-- Question 1: Which products should we order more of or less of?
 
 -- Write a query to compute the low stock for each product using a correlated subquery.
 
@@ -143,8 +144,59 @@ SELECT productcode,
   GROUP BY productcode
   ORDER BY product_performance DESC
   LIMIT 10;
- 
 
+  --Question 2: How Should We Match Marketing and Communication Strategies to Customer Behavior?
+
+-- Write a query to join the products, orders, and orderdetails tables to have customers and products information in the same place.
+
+SELECT o.customerNumber, SUM(od.quantityOrdered * (od.priceEach - p.buyPrice)) AS customer_profit
+  FROM orders o
+  JOIN orderdetails od
+    ON o.orderNumber = od.orderNumber
+  JOIN products p
+    ON od.productCode = p.productCode
+ GROUP BY o.customerNumber;
+
+ -- Write a query to find the top five VIP customers.
+
+ WITH customer_profit AS (
+
+SELECT o.customerNumber, SUM(od.quantityOrdered * (od.priceEach - p.buyPrice)) AS profit
+  FROM orders o
+  JOIN orderdetails od
+    ON o.orderNumber = od.orderNumber
+  JOIN products p
+    ON od.productCode = p.productCode
+ GROUP BY o.customerNumber
+ )
+  
+SELECT contactLastName, contactFirstName, city, country, cp.profit
+  FROM customers c
+  JOIN customer_profit cp
+    ON c.customerNumber = cp.customerNumber
+ ORDER BY profit DESC
+ LIMIT 5;
+
+ -- Similar to the previous query, write a query to find the top five least-engaged customers.
+
+ WITH customer_profit AS (
+
+SELECT o.customerNumber, SUM(od.quantityOrdered * (od.priceEach - p.buyPrice)) AS profit
+  FROM orders o
+  JOIN orderdetails od
+    ON o.orderNumber = od.orderNumber
+  JOIN products p
+    ON od.productCode = p.productCode
+ GROUP BY o.customerNumber
+ )
+  
+SELECT contactLastName, contactFirstName, city, country, cp.profit
+  FROM customers c
+  JOIN customer_profit cp
+    ON c.customerNumber = cp.customerNumber
+ ORDER BY profit 
+ LIMIT 5;
+ 
 
 
 
