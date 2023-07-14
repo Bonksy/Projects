@@ -136,14 +136,15 @@ SELECT productcode,
  LIMIT 10
  )
  
- SELECT productCode, 
-        SUM(quantityOrdered * priceEach) AS product_performance
-  FROM orderdetails od
-  WHERE productCode IN(SELECT productCode 
+SELECT od.productCode, pr.productName, pr.productLine, SUM(quantityOrdered * priceEach) AS product_performance
+  FROM products pr
+  JOIN orderdetails od
+    ON pr.productCode = od.productCode
+ WHERE od.productCode IN(SELECT productCode 
 						 FROM low_stock_products)
-  GROUP BY productcode
-  ORDER BY product_performance DESC
-  LIMIT 10;
+ GROUP BY od.productcode
+ ORDER BY product_performance DESC
+ LIMIT 10;
 
   --Question 2: How Should We Match Marketing and Communication Strategies to Customer Behavior?
 
@@ -197,9 +198,48 @@ SELECT contactLastName, contactFirstName, city, country, cp.profit
  ORDER BY profit 
  LIMIT 5;
  
+-- Question 3: How Much Can We Spend on Acquiring New Customers?
+
+-- Write a query to compute the average of customer profits using the CTE on the previous screen.
+-- Customer LTV(Lifeime Value)
+
+WITH customer_profit AS (
+
+SELECT o.customerNumber, SUM(od.quantityOrdered * (od.priceEach - p.buyPrice)) AS profit
+  FROM orders o
+  JOIN orderdetails od
+    ON o.orderNumber = od.orderNumber
+  JOIN products p
+    ON od.productCode = p.productCode
+ GROUP BY o.customerNumber
+ )
+  
+SELECT AVG(cp.profit) AS LTV
+  FROM customer_profit cp
 
 
+/*
+Conclusion:
 
+Question 1: Which products should we order more of or less of?
 
- 
- 
+Answer 1: After analysing the results and comparing low stock with the highest performing products it can be seen that the 
+classic cars category should be the product line that should be restocked on a frequent basis. 
+They appear 6 times within the top 10 highest performing products.
+
+Question 2: How should we match marketing and communication strategies to customer behaviors?
+
+Answer 2:  Analysing the results of the profit generated from both the top and lowest customer, it is advised to offer loyalty rewards
+and service to the top perfomring customers in order to retain them.
+For the bottom customers, it would be good to conduct surveys to better understand what they require of the company as well as 
+what they expect to spend for the service. This will help in strategising the best approach to attract new customers.
+
+Question 3: How Much Can We Spend on Acquiring New Customers?
+
+Answer 3: The average lifetime value of a customer is £39,040. Therefore, we know that every new customer will generate a profit of 
+£39,040. With this information we can strategise how much funds the company would like to spend on new customer acquisition.
+
+PROJECT COMPLETE
+
+*/
+
